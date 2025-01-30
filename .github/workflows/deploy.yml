@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code,
+      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -23,7 +23,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }} 
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # Setup Rust
       - name: Setup Rust
@@ -34,14 +34,12 @@ jobs:
 
       # Build Docker image
       - name: Build Docker image
-        run: docker build -t binomial-theorem .
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/binomial-theorem:latest .
 
       # Run Docker container
       - name: Run Docker container
-        run: docker run --rm binomial-theorem
+        run: docker run --rm ghcr.io/${{ github.repository_owner }}/binomial-theorem:latest
 
       # Push image to registry
       - name: Push image to registry
-        run: |
-          docker tag binomial-theorem ghcr.io/${{ github.repository_owner }}/binomial-theorem:latest
-          docker push ghcr.io/${{ github.repository_owner }}/binomial-theorem:latest
+        run: docker push ghcr.io/${{ github.repository_owner }}/binomial-theorem:latest
