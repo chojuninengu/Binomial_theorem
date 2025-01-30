@@ -37,7 +37,7 @@ jobs:
         run: docker build -t ghcr.io/${{ github.repository_owner }}/binomial-theorem:latest .
         # Run binomial container
       - name: Running the container
-        run: docker run -itd --name binomial-container  ghcr.io/${{ github.repository_owner }}/binomial-theorem:latest
+        run: docker run -it --name binomial-container  ghcr.io/${{ github.repository_owner }}/binomial-theorem:latest
 
       - name: Push the image to GitHub Container Registry
         run: docker push ghcr.io/${{ github.repository_owner }}/binomial-theorem:latest
