@@ -1,4 +1,9 @@
 #!/bin/bash
 
-# Run the Rust application
+echo "Starting Binomial Theorem Calculator..."
+
+# Run the compiled binary
+echo "Running the program..."
 ./binomial-theorem
+
+echo "Done!"
