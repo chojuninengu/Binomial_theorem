@@ -16,7 +16,13 @@ jobs:
       # Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v3
-
+        # login  into the github container registry
+      - name: Log into github container registry
+         uses: docker/login-action@v2
+         with:
+           registry: ghcr.io
+           username: ${{ github.actor }}
+           password: ${{ GITHUB.TOKEN }}
       # Set up Rust
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
@@ -27,7 +33,10 @@ jobs:
       # Build the Docker image
       - name: Build the Docker image
         run: docker build -t binomial-theorem .
-
+       
       # Run the Docker container
       - name: Run the Docker container
         run: docker run --rm binomial-theorem
+        # Push the image to github container registry    
+      - name: push
+        run: docker push ghcr.io/${{ github.repository_owner }}/binomial-theorem:latest
