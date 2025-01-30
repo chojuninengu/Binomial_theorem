@@ -1,31 +1,20 @@
-name: Docker Build and Push
-
+name: Build and deploy rust
 on:
   push:
     branches:
       - master
 
 jobs:
-  build-and-push:
+  build:
     runs-on: ubuntu-22.04
     permissions:
       packages: write
-
     steps:
-
+      # Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v3
-t
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
 
-      - name: Build Rust project
-        run: |
-          rustc src/main.rs -o binomial-theorem
-
+      # Login to GitHub Container Registry
       - name: Login to container registry
         uses: docker/login-action@v2
         with:
@@ -33,11 +22,10 @@ t
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      # Build and push Docker image
+      - name: Build Project
         uses: docker/build-push-action@v4
         with:
-          context: .
-          push: true
-          tags: |
+          tag: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.run_number }}
