@@ -13,30 +13,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository code
+      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
-        # login  into the github container registry
-      - name: Log into github container registry
-         uses: docker/login-action@v2
-         with:
-           registry: ghcr.io
-           username: ${{ github.actor }}
-           password: ${{ GITHUB.TOKEN }}
-      # Set up Rust
-      - name: Set up Rust
+
+      # Login to GitHub Container Registry
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Setup Rust
+      - name: Setup Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
 
-      # Build the Docker image
-      - name: Build the Docker image
+      # Build Docker image
+      - name: Build Docker image
         run: docker build -t binomial-theorem .
-       
-      # Run the Docker container
-      - name: Run the Docker container
+
+      # Run Docker container
+      - name: Run Docker container
         run: docker run --rm binomial-theorem
-        # Push the image to github container registry    
-      - name: push
-        run: docker push ghcr.io/${{ github.repository_owner }}/binomial-theorem:latest
+
+      # Push image to registry
+      - name: Push image to registry
+        run: |
+          docker tag binomial-theorem ghcr.io/${{ github.repository_owner }}/binomial-theorem:latest
+          docker push ghcr.io/${{ github.repository_owner }}/binomial-theorem:latest
