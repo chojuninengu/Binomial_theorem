@@ -1,31 +1,33 @@
-name: Build and Deploy Binomial 
+name: CI Pipeline
+
 on:
   push:
     branches:
-    - main
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
-    permissions:
-      packages: write
-    
+    runs-on: ubuntu-latest
+
     steps:
+      # Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name:  Login to container registry
-        uses: docker/login-action@v2
-        with: 
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Build Project
-        uses: docker/build-push-action@v4
+      # Set up Rust
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
         with:
-          context: .
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.run_number }}
+          toolchain: stable
+          override: true
+
+      # Build the Docker image
+      - name: Build the Docker image
+        run: docker build -t binomial-theorem .
+
+      # Run the Docker container
+      - name: Run the Docker container
+        run: docker run --rm binomial-theorem
